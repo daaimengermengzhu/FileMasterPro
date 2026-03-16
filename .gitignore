@@ -1,0 +1,22 @@
+# 构建输出目录
+dist/
+build/
+
+# 规格文件
+*.spec
+
+# JSON 文件（日志文件除外）
+*.json
+!*log*.json
+
+# Python 缓存
+__pycache__/
+
+# 环境变量文件
+.env
+
+# VSCode 配置
+.vscode/
+
+# 可执行文件
+*.exe
