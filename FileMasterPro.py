@@ -166,43 +166,27 @@ class FileOrganizer:
         return f"{size:.2f}PB"
     
     def is_excluded_folder(self, folder_name, full_path="", user_exclude_folders=None):
-        """检查文件夹是否在排除列表中"""
+        """检查文件夹是否在排除列表中（仅按目录名精确匹配）"""
         if user_exclude_folders is None:
             user_exclude_folders = set()
-        
+
         # 合并默认排除和用户自定义排除
         all_exclude_folders = EXCLUDE_FOLDERS.union(user_exclude_folders)
-        
-        # 检查文件夹名是否在排除列表中
+
+        # 仅检查当前文件夹名是否精确匹配排除列表
         if folder_name in all_exclude_folders:
             return True
-        
-        # 检查文件夹路径是否包含排除的父文件夹
-        if full_path:
-            for excluded in all_exclude_folders:
-                if excluded in full_path:
-                    return True
-        
+
         return False
     
     def is_powerful_excluded_folder(self, folder_name, full_path=""):
-        """检查文件夹是否在强力白名单中（包含关键词的文件夹）"""
+        """检查文件夹是否在强力白名单中（按目录名精确匹配，大小写不敏感）"""
         folder_name_lower = folder_name.lower()
-        full_path_lower = full_path.lower() if full_path else ""
-        
-        # 检查文件夹名是否包含强力白名单关键词
-        for keyword in POWERFUL_EXCLUDE_KEYWORDS:
-            keyword_lower = keyword.lower()
-            if keyword_lower in folder_name_lower:
-                return True
-        
-        # 检查完整路径是否包含强力白名单关键词
-        if full_path:
-            for keyword in POWERFUL_EXCLUDE_KEYWORDS:
-                keyword_lower = keyword.lower()
-                if keyword_lower in full_path_lower:
-                    return True
-        
+        keywords_lower = {k.lower() for k in POWERFUL_EXCLUDE_KEYWORDS}
+
+        if folder_name_lower in keywords_lower:
+            return True
+
         return False
     
     def is_critical_extension(self, filename):
